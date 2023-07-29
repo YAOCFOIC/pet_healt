@@ -1,0 +1,85 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:700,300);
+.frame {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: 110%;
+  height: 30em;
+  margin-top: -200px;
+  margin-left: -200px;
+  border-radius: 2px;
+  box-shadow: 4px 8px 16px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background: linear-gradient(to top right, darkmagenta 0%, hotpink 100%);
+  color: #333;
+  font-family: "Open Sans", Helvetica, sans-serif;
+}
+
+.center-upload {
+    position: relative;
+    top: 70%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    border-radius: 3px;
+    box-shadow: 8px 10px 15px 0 rgba(0, 0, 0, 0.2);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+  }
+  
+.title-uploaded {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid #999;
+    text-align: center;
+  }
+  
+#drop-upload{
+    font-size: 16px;
+    font-weight: 300;
+    color: #666;
+  }
+  
+  .dropzone {
+    width: 50%;
+    height: 30%;
+    border: 1px dashed #999;
+    border-radius: 3px;
+    text-align: center;
+  }
+  
+  .upload-icon {
+    margin: 35px 2px 2px 2px;
+  }
+  
+  .upload-input {
+    position: absolute!important;
+    top: -62px!important;
+    left: 0!important;
+    width: 100%!important;
+    height: 100%!important;
+    opacity: 0!important;
+  }
+  
+  .btn-upload {
+    display: block!important;;
+    width: 140px!important;;
+    height: 40px!important;;
+    background: darkmagenta!important;;
+    color: #fff!important;;
+    border-radius: 3px!important;;
+    border: 0!important;;
+    box-shadow: 0 3px 0 0 hotpink!important;;
+    transition: all 0.3s ease-in-out!important;;
+    font-size: 14px!important;;
+  }
+  
+  .btn-upload:hover {
+    background: rebeccapurple!important;;
+    box-shadow: 0 3px 0 0 deeppink!important;;
+  }
+

@@ -1,0 +1,77 @@
+{% extends "../fatherTemplate.html" %}
+{% load widget_tweaks %}
+{% block content %}
+    <section class="vh-100 bg-image"
+    style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+        <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <form class="card" method="POST" action="/registerPet/" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <div class="frame">
+                                    <div class="center-upload">
+                                        <div class="title-uploaded">
+                                            <h1 id="drop-upload">Drop file to upload</h1>
+                                        </div>
+                                        <div class="dropzone">
+                                            <div class="mb-3"></div>
+                                            <i class="fas fa-paw fa-2x cyan-text upload-ico"></i>
+                                            
+                                            <!-- <input type="file" class="upload-input" /> -->
+                                        </div>
+                                        {{form_pet.imagen|add_class:"btn-upload"}}
+                                        <!-- <button class="btn-upload" >Upload file</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                
+                                <div class="form-outline mb-4">
+                                    {{form_pet.name|add_class:"form-control form-control-lg"}}
+                                    <label class="form-label" for="formControlDefault">Name of Pet</label>
+                                </div>
+                                <div class="mb-4">
+                                    {{form_pet.animal|add_class:"form-control"}}
+                                </div>
+                                
+                                <div class="form-outline mb-4">
+                                    {{form_pet.type_food|add_class:"form-control"}}
+                                    <label class="form-label" for="formControlDefault">Type of Food</label>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    {{form_pet.age|add_class:"form-control"}}
+                                    <label class="form-label" for="formControlDefault">Age</label>
+                                </div>
+                            </p>
+                            <input type="submit" value="SAVE" class="btn btn-primary btn-block btn-lg gradient-custom-4  text-light">
+                            </div>
+                        </form>
+                    </div>
+                    {% for p in object_list %}
+                        {% if p.owner.id == user.id %}
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                    <img src="{{p.imagen.url}}" class="img-fluid"/>
+                                    <a href="#!">
+                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                    </a>
+                                    </div>
+                                    <div class="card-body">
+                                    <h5 class="card-title">Name:{{p.name}}</h5>
+                                    <p class="card-text"><strong>Age:</strong>{{p.age}}
+                                    
+                                    </p>
+                                    <a href="#!" class="btn btn-primary">SEE RECORD</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
