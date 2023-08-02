@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CustomerCreateForm,PetForm
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LogoutView
 from django.views.generic import ListView
@@ -24,7 +26,7 @@ def register(request):
             return redirect(to="home")
         data["form"] = send_form
     return render(request,"registration/register.html",data)
-
+@method_decorator(login_required, name='dispatch')
 class HomeView(ListView):
     model = Pet
     template_name = 'apps/home.html'
@@ -36,15 +38,13 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         context['form_pet'] = PetForm()
         return context
-
+    
 def register_pet(request):
-
     if request.method == "POST":
         form = PetForm(request.POST,request.FILES)
         if form.is_valid():
             form = form.save(commit=False)
             form.owner = request.user
-            print(request.user)
             form.save()
 
         return redirect(to='home')
@@ -54,13 +54,7 @@ def register_pet(request):
     
     return render(request,'apps/home.html')
 """
-    name = request.POST['name']
-    animal_id = request.POST['animal_id']
-    type_food = request.POST['type_food']
-    owner_id = request.user.id
-    imagen = request.POST['imagen']
-    course = Pet.objects.create(name=name,age=8, animal_id=animal_id,type_food=food,c=imagen,owner_id=owner_id)
-    return redirect('/')
+
     
 
 def deletCourse(request, id):
