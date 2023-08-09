@@ -32,8 +32,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 LOGIN_REDIRECT_URL = '/home/'
-
 INSTALLED_APPS = [
+    'clearcache',
+    'account',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'pet',
 ]
-
+AUTH_USER_MODEL = 'account.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -122,6 +123,7 @@ USE_L10N = True
 
 USE_TZ = False
 
+APPEND_SLASH = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

@@ -1,14 +1,13 @@
+{% load static %}
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
     <!-- Container wrapper -->
     <div class="container">
       <!-- Navbar brand -->
-      <a class="navbar-brand me-2" href="https://mdbgo.com/">
+      <a class="navbar-brand me-2" href="/">
         <img
-          src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
-          height="16"
-          alt="MDB Logo"
-          loading="lazy"
+          src="{% static "image/pet_health.png" %}"
+          height="70"
           style="margin-top: -1px;"
         />
       </a>
@@ -30,19 +29,38 @@
       <div class="collapse navbar-collapse" id="navbarButtonsExample">
         <!-- Left links -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <!-- 
           <li class="nav-item">
-            <a class="nav-link" href="/">Dashboard</a>
+            <a class="nav-link" href="/">PET HEALT</a>
           </li>
+          -->
         </ul>
         <!-- Left links -->
   
         <div class="d-flex align-items-center">
           {% if user.is_authenticated %}
           <div class="navbar-nav">
-            <a class="nav-link" href="{% url 'logout' %}?next={% url 'index' %}">Logout</a>
-            <a class="nav-link" href="#">Welcome, {{user.username}}</a>
+            <a class="nav-link" href="/change-password/">Medical record</a>
           </div>
-
+          <div class="dropdown">
+            <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+              Welcome, {{user.username}}
+              <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25" alt="Black and White Portrait of a Man" loading="lazy"/>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+              <li>
+                <a class="dropdown-item" href="/home/">My pets</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">Settings</a>
+              </li>
+              <li>
+                <a class="dropdown-item"  href="{% url 'logout' %}?next={% url 'index' %}">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Right elements -->
           {% else %}
         
         

@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('admin/clearcache/', include('clearcache.urls'),name='clearcache_admin'),
     path('admin/', admin.site.urls),
     path('', include('pet.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

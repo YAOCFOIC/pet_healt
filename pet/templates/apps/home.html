@@ -1,77 +1,242 @@
 {% extends "../fatherTemplate.html" %}
 {% load widget_tweaks %}
+{% load static %}
 {% block content %}
-    <section class="vh-100 bg-image"
-    style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
-        <div class="mask d-flex align-items-center h-100 gradient-custom-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <form class="card" method="POST" action="/registerPet/" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <div class="frame">
-                                    <div class="center-upload">
-                                        <div class="title-uploaded">
-                                            <h1 id="drop-upload">Drop file to upload</h1>
-                                        </div>
-                                        <div class="dropzone">
-                                            <div class="mb-3"></div>
-                                            <i class="fas fa-paw fa-2x cyan-text upload-ico"></i>
-                                            
-                                            <!-- <input type="file" class="upload-input" /> -->
-                                        </div>
-                                        {{form_pet.imagen|add_class:"btn-upload"}}
-                                        <!-- <button class="btn-upload" >Upload file</button> -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                
-                                <div class="form-outline mb-4">
-                                    {{form_pet.name|add_class:"form-control form-control-lg"}}
-                                    <label class="form-label" for="formControlDefault">Name of Pet</label>
-                                </div>
-                                <div class="mb-4">
-                                    {{form_pet.animal|add_class:"form-control"}}
-                                </div>
-                                
-                                <div class="form-outline mb-4">
-                                    {{form_pet.type_food|add_class:"form-control"}}
-                                    <label class="form-label" for="formControlDefault">Type of Food</label>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    {{form_pet.age|add_class:"form-control"}}
-                                    <label class="form-label" for="formControlDefault">Age</label>
-                                </div>
-                            </p>
-                            <input type="submit" value="SAVE" class="btn btn-primary btn-block btn-lg gradient-custom-4  text-light">
-                            </div>
-                        </form>
+    <div class="container">
+        <div class="row my-md-2">
+            <div class="col-4"></div>
+            <div class="col-4 d-flex justify-content-center"><h4 class="text-black">Register Your Pet!:</h4></div>
+            <div class="col-4"></div>
+        </div>
+        <div class="row my-md-2">
+            <div class="col-md-4">
+                <canvas class="webgl"></canvas>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center">
+                <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+                    <image class="rounded-circle" alt="avatar1" src="{% static "image/200pets.png" %}" />
+                </button>
                     </div>
-                    {% for p in object_list %}
-                        {% if p.owner.id == user.id %}
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                    <img src="{{p.imagen.url}}" class="img-fluid"/>
-                                    <a href="#!">
-                                        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                    </a>
-                                    </div>
+            <div class="col-md-4">
+                <!-- Second Modal -->
+                <div class="modal fade" id="modal2" tabindex="-1" aria-labelledby="modal2Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modal2Label">Form Pet</h5>
+                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Modal 2 content goes here -->
+                                <form method="POST" action="/registerPet/" enctype="multipart/form-data">
+                                        {% csrf_token %}
                                     <div class="card-body">
-                                    <h5 class="card-title">Name:{{p.name}}</h5>
-                                    <p class="card-text"><strong>Age:</strong>{{p.age}}
-                                    
-                                    </p>
-                                    <a href="#!" class="btn btn-primary">SEE RECORD</a>
+                                        <div class="mb-4">
+                                            {{form_pet.image|add_class:"form-control form-control-sm"}}
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            {{form_pet.name|add_class:"form-control form-control-lg"}}
+                                            <label class="form-label" for="formControlDefault">Name of Pet</label>
+                                        </div>
+                                        <div class="mb-4">
+                                            {{ form_pet.animal|add_class:"form-control" }}
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            {{ form_pet.color|add_class:"form-control" }}
+                                            <label class="form-label" for="formControlDefault">Color</label>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            {{form_pet.type_food|add_class:"form-control"}}
+                                            <label class="form-label" for="formControlDefault">Type of Food</label>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            {{form_pet.age|add_class:"form-control"}}
+                                            <label class="form-label" for="formControlDefault">Age</label>
+                                        </div>
+                                 
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary text-light">Save </button>
+                                            <button type="submit" class="btn btn-success text-light">update </button>
+                                            <button type="submit" class="btn btn-danger text-light">delete </button>
+                                        </div>
+                                          
                                     </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">FROMS: CREATE - UPADATE - DELETE </h5>
+                                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                            <div class="modal-body d-flex justify-content-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#modal2">
+                                        <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                        <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" />  <p>  DATA Pet</p>
+                                    </button>
                                 </div>
                             </div>
-                        {% endif %}
-                    {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+<div class="container">
+    <div class="row">
+        {% for p in object_list %}
+            <div class="col-md-4">
+                <a class="ripple" data-mdb-toggle="modal" data-mdb-target="#choose">
+                    <img alt="example" class="img-fluid rounded-circle" src="{{ p.image.url }}" />
+                </a>
+            </div>
+            <div class="modal fade" id="choose" tabindex="-1" aria-labelledby="modal2Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modal2Label">CHOOSE </h5>
+                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="btn-group">
+                             
+                                <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#indicatorModal">
+                                    <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                    <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" /> <p>  INDICATOR HEALT</p>
+                                </button>
+                                <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#medicalModal">
+                                    <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                    <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" /> 
+                                    <p>  MEDICAL CONTROL</p>
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <a href="/condition/{{p.id}}" class="btn btn-img ">
+                                    <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" />
+                                    <p>MONITORING CONDITION</p>
+                                </a>
+                                <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#healthModal">
+                                    <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                    <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" /> 
+                                    <p>HEALT CONDITION</p>
+                                </button>
+                              
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>        
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="indicatorModal" tabindex="-1" role="dialog" aria-labelledby="indicatorModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="indicatorModalLabel">Indicator Form</h5>
+                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Formulario de Indicator -->
+                            <form method="post" action="/inidicator/{{p.id}}/">
+                                {% csrf_token %}
+                        
+                                <p class="text-center"><strong>Type Indicator:</strong></p>
+                                <hr />
+                                <div class="form-check mb-2">
+                                    {{form_indicator.indicator_type|add_class:"form-select"}}
+                                </div>
+                                
+                                <div class="form-check mb-2">
+                                    {% with field_label=form_indicator.value.label %}
+                                        {% render_field form_indicator.value class="form-control" placeholder=field_label %}
+                                    {% endwith %}
+                                </div>
+                                <div class="card-footer text-end">
+                                    <button type="submit" class="btn btn-primary">SAVE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="medicalModal" tabindex="-1" role="dialog" aria-labelledby="medicalModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="medicalModalLabel">Medical Form</h5>
+                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="/inidicator/{{p.id}}/">
+                                {% csrf_token %}
+                                <div class="form-check mb-2">
+                                    {% render_field form_medical.date class="form-control form-control-lg" %}
+                                </div>
+                                <div class="form-check mb-2">
+                                    {% render_field form_medical.professional_name class="form-control form-control-lg" %}
+                                </div>
+                                <div class="form-check mb-2">
+                                    {% render_field form_medical.observation class="form-control" %}
+                                  
+                                </div>
+                                
+                                <div class="card-footer text-end">
+                                    <button type="button" class="btn btn-danger" data-mdb-dismiss="modal" style="">
+                                        Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">SAVE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="healthModal" tabindex="-1" role="dialog" aria-labelledby="healthModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="healthModalLabel">Medical Form</h5>
+                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="/health/{{p.id}}/">
+                                {% csrf_token %}
+                                {{form_healt.date}}
+                                {%for m in form_healt.health_type_condition %}
+                                    <div class="form_healt-check mb-2">
+                                        {{m}}
+                                    </div>
+                                {%endfor%}
+                               
+                                <div class="form-check mb-2">
+                                    {% render_field form_healt.health_condition class="form-control" placeholder=form_healt.health_condition.name%}
+                                    
+                                </div>
+                                
+                                <div class="card-footer text-end">
+                                    <button type="button" class="btn btn-danger" data-mdb-dismiss="modal" style="">
+                                        Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">SAVE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
