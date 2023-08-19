@@ -2,5 +2,69 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            SEARCH MEDICAL RECORD
+        </div>
+        <div class="col-12">
 
+            <form method="get" class="input-group ">
+                {{ form.start_date|add_class:"form-control" }}
+                {{ form.end_date|add_class:"form-control" }}
+                <button type="submit" class="btn btn-primary" id="advanced-search-button" ><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        
+        {% if form.start_date.value and form.end_date.value %}
+            <div class="col-12">
+                <a href="#" class="btn btn-primary btn-floating" id="generate-pdf-button">
+                    <i class="fas fa-download"></i>
+                </a>
+            </div>
+            <script>
+                document.getElementById('generate-pdf-button').addEventListener('click', function () {
+                    var startDate = document.querySelector('[name="start_date"]').value;
+                    var endDate = document.querySelector('[name="end_date"]').value;
+                    
+                    var pdfUrl = "{% url 'generate_pdf_reports_within_range' %}" + "?start_date=" + startDate + "&end_date=" + endDate;
+                    window.location.href = pdfUrl;
+                });
+            </script>            
+        {% endif %}
+        <table class="table align-middle mb-2 bg-white ">
+            <thead class="bg-primary">
+              <tr>
+                <th class="text-white">Data</th>
+                <th class="text-white">Fecha</th>
+                <th class="text-white">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {% for condition in monitoring_conditions %}
+                <td>
+                  <div class="d-flex align-items-center">
+                    
+                    <img src="{{ condition.pet.image.url }}" alt="" style="width: 45px; height: 45px"class="rounded-circle"/>
+                    <div class="ms-3">
+                      <p class="fw-bold mb-1">Name:{{ condition.pet.name }}</p>
+                      <p class="text-muted mb-0">Age:{{ condition.pet.age }}</p>
+                    </div>
+                  </div>
+                </td>
+         
+              
+                <td>{{ condition.date }}</td>
+                <td>
+                    <a href="/medicalrecord/{{ condition.pet.id }}/" class="btn btn-primary btn-floating">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </td>
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+    </div>
+</div>
 {% endblock %}

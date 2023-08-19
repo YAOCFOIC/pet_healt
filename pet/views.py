@@ -1,16 +1,156 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
-from .forms import CustomerCreateForm,PetForm,IndicatorsHealthForm,MedicalControlForm,HealthConditionForm,MonitoringConditionForm
+from .forms import CustomerCreateForm,PetForm,IndicatorsHealthForm,MedicalControlForm,HealthConditionForm,MonitoringConditionForm,DateRangeForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import LogoutView
 from django.views.generic import ListView
-from .models import Animal, Pet
+from django.http import FileResponse
+from django.template.loader import get_template
+from django.template import Context
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from .models import Animal, Pet,HealthCondition,MedicalControl,MonitoringCondition
 from django.contrib.auth.models import User
 from django.forms import formset_factory
 # Create your views here.
+@login_required
+def generate_pdf_report(request, pet_id):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte.pdf"'
+    user = request.user  # Get the currently logged-in user
+    pets_with_conditions = Pet.objects.filter(owner=user, seguimiento_condiciones__diagnosis__isnull=False,controles_medicos__observation__isnull=False, id=pet_id).distinct()
+    
+    # Crear el documento PDF usando reportlab
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+    observation_style = ParagraphStyle(name='ObservationStyle', fontSize=12, leading=14)
+    elements = []
+        
+    for pet in pets_with_conditions:
+        if pet.image:
+            pet_image = pet.image.path  # Use the path to the image
+            img = Image(pet_image, width=100, height=100)
+            elements.append(img)
+        elements.append(Paragraph(f"<b>Name</b>: {pet.name}", styles['Normal']))
+        elements.append(Paragraph(f"<b>Age</b>: {pet.age}", styles['Normal']))
+        
+        # Obtener las condiciones de salud relacionadas con la mascota
+        health_conditions = HealthCondition.objects.filter(pet=pet)
+        if health_conditions.exists():
+            elements.append(Paragraph("Healths Conditions", styles['Heading2']))
+        for condition in health_conditions:
+            elements.append(Paragraph(f"<b>Status</b>:{condition.health_type_condition} ", styles['Normal']))
+            elements.append(Paragraph(f"<b>Recomendation</b>: {condition.health_condition} ", styles['Normal']))
+            elements.append(Paragraph(f"<b>Date</b>: {condition.date}", styles['Normal']))
+            # Agregar más detalles según sea necesario
+        
+        # Obtener los controles médicos relacionados con la mascota
+        medical_controls = MedicalControl.objects.filter(pet=pet)
+        if medical_controls.exists():
+            elements.append(Paragraph("Medicals Controls", styles['Heading2']))
+        for control in medical_controls:
+            elements.append(Paragraph("<b>Professional</b>: "+control.professional_name, styles['Normal']))
+            elements.append(Paragraph(control.observation, styles['Normal']))
+            elements.append(Paragraph(f"<b>Date</b>: {control.date}", styles['Normal']))
+            elements.append(Spacer(1, 12))
+            # Agregar más detalles según sea necesario
+        
+        # Obtener las condiciones de seguimiento relacionadas con la mascota
+        monitoring_conditions = MonitoringCondition.objects.filter(pet=pet)
+        for condition in monitoring_conditions:
+            elements.append(Paragraph("Diagnosis", styles['Heading2']))  # Title
+            elements.append(Paragraph(condition.diagnosis, styles['Normal']))  # Text
+            elements.append(Paragraph(f"<b>Date</b>: {condition.date}", styles['Normal']))
+            elements.append(Spacer(1, 12))
+            # Agregar más detalles según sea necesario
+        
+    doc.build(elements)
+
+    return response
+@login_required
+def generate_pdf_reports_within_range(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reports_within_range.pdf"'
+    
+    # Get the date range from the form
+    form = DateRangeForm(request.GET or None)
+    if form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        monitoring_conditions = MonitoringCondition.objects.filter(date__range=(start_date, end_date))
+        
+        
+        monitoring_conditions_within_range = MonitoringCondition.objects.filter(date__range=(start_date, end_date))
+        health_conditions_within_range = HealthCondition.objects.filter(date__range=(start_date, end_date))
+        medical_controls_within_range = MedicalControl.objects.filter(date__range=(start_date, end_date))
+        pets_within_range = Pet.objects.filter(seguimiento_condiciones__in=monitoring_conditions_within_range)
+    
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        for pet in pets_within_range:
+            if pet.image:
+                pet_image = pet.image.path  # Use the path to the image
+                img = Image(pet_image, width=100, height=100)
+                elements.append(img)
+            elements.append(Paragraph(f"<b>Name</b>: {pet.name}", styles['Normal']))
+            elements.append(Paragraph(f"<b>Age</b>: {pet.age}", styles['Normal']))
+
+            health_conditions = health_conditions_within_range.filter(pet=pet)
+            if health_conditions.exists():
+                elements.append(Paragraph("<b>Health Conditions</b>", styles['Heading2']))
+            for condition in health_conditions:
+                elements.append(Paragraph(f"<b>Status</b>: {condition.health_type_condition}", styles['Normal']))
+                elements.append(Paragraph(f"<b>Recomendation</b>: {condition.health_condition}", styles['Normal']))
+                elements.append(Paragraph(f"<b>Date</b>: {condition.date}", styles['Normal']))
+                elements.append(Spacer(1, 12))
+
+            medical_controls = medical_controls_within_range.filter(pet=pet)
+            if medical_controls.exists():
+                elements.append(Paragraph("<b>Medical Controls</b>", styles['Heading2']))
+            for control in medical_controls:
+                elements.append(Paragraph(f"<b>Professional</b>: {control.professional_name}", styles['Normal']))
+                elements.append(Paragraph(control.observation, styles['Normal']))
+                elements.append(Paragraph(f"<b>Date</b>: {control.date}", styles['Normal']))
+                elements.append(Spacer(1, 12))
+
+            pet_monitoring_conditions = monitoring_conditions_within_range.filter(pet=pet)
+            for condition in pet_monitoring_conditions:
+                elements.append(Paragraph("<b>Diagnosis</b>", styles['Heading2']))
+                elements.append(Paragraph(condition.diagnosis, styles['Normal']))
+                elements.append(Paragraph(f"<b>Date</b>: {condition.date}", styles['Normal']))
+                elements.append(Spacer(1, 12))
+
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        doc.build(elements)
+
+    return response
+@login_required
+def history_view(request):
+    user = request.user  # Get the currently logged-in user
+
+    # Filter pets owned by the logged-in user
+    pets = Pet.objects.filter(owner=user)
+    monitoring_conditions = MonitoringCondition.objects.all()
+    
+    form = DateRangeForm(request.GET or None)
+    if form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        monitoring_conditions = monitoring_conditions.filter(date__range=(start_date, end_date))
+        
+    context = {
+        'pets': pets,
+        'monitoring_conditions': monitoring_conditions,
+        'form': form
+    }
+    return render(request, 'apps/history.html', context)
 @login_required
 def inidicator_view(request,id):
     data = {
@@ -53,7 +193,6 @@ def health_view(request,id):
     }
     if request.method == 'POST':
         send_form = HealthConditionForm(data=request.POST)
-        print(send_form)
         if send_form.is_valid():
             medical_control = send_form.save(commit=False)
             medical_control.pet_id = id  # Assign the pet instance related to the form
@@ -141,13 +280,3 @@ def register_pet(request):
         print("error")
     
     return render(request,'apps/home.html')
-"""
-
-    
-
-def deletCourse(request, id):
-    course = Course.objects.get(id=id)
-    course.delete()
-
-    return redirect('/')
-"""
