@@ -1,0 +1,35 @@
+{% extends "../fatherTemplate.html" %} {% load widget_tweaks %} {% load static%} 
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="mx-0 mx-sm-auto">
+        <div class="card">
+            <div class="card-header bg-primary d-flex justify-content-center">
+                <h5 class="card-title text-white mt-2" id="exampleModalLabel">
+                    <i class="fas fa-paw fa-2x cyan-text"></i> PET INDICATOR HEALT STATUS <i class="fas fa-paw fa-2x cyan-text"></i>
+                </h5>
+            </div>
+            <div class="modal-body">
+                <form class="px-4" method="POST">
+                    {% csrf_token %}
+                    
+                    <p class="text-center"><strong>Your rating:</strong></p>
+                    <hr />
+                    <div class="form-check mb-2">
+                        {{form.indicator_type|add_class:"form-select"}}
+                    </div>
+                    
+                    <div class="form-check mb-2">
+                        {% with field_label=form.value.label %}
+                            {% render_field form.value class="form-control" placeholder=field_label %}
+                        {% endwith %}
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

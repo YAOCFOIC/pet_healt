@@ -1,0 +1,53 @@
+{% extends "../fatherTemplate.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="mx-0 mx-sm-auto">
+        <div class="card">
+            <div class="card-header bg-primary d-flex justify-content-center">
+                <h5 class="card-title text-white mt-2" id="exampleModalLabel">
+                    HEALT CONDITION
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <img src="{% static 'image/pet_stat.png' %}" alt="Sample photo" class="img-thumbnail" />
+                    <p>
+                        <strong>Your opinion matters</strong>
+                    </p>
+                    <p>
+                        Have some ideas how to improve our product?
+                        <strong>Give us your feedback.</strong>
+                    </p>
+                </div>
+                <hr />
+                <form class="px-4" method="POST">
+                    {% csrf_token %}
+                    {{form.date}}
+                    <p class="text-center"><strong>Your rating:</strong></p>
+              
+                    
+                    {%for m in form.health_type_condition %}
+                        <div class="form-check mb-2">
+                            {{m}}
+                        </div>
+                    {%endfor%}
+                    
+                    <p class="text-center"><strong>What could your pet improve?</strong></p>
+                    <!-- Message input -->
+                    <div class="form-outline mb-4">
+                        {{form.health_condition|add_class:"form-control"}}
+                        <label class="form-label" for="form4Example3">Health condition:
+                        </label>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
