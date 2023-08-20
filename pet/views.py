@@ -12,6 +12,7 @@ from django.template.loader import get_template
 from django.template import Context
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
+from django.urls import reverse_lazy
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
@@ -151,6 +152,7 @@ def history_view(request):
         'form': form
     }
     return render(request, 'apps/history.html', context)
+
 @login_required
 def inidicator_view(request,id):
     data = {
@@ -256,7 +258,7 @@ class HomeView(ListView):
     template_name = 'apps/home.html'
 
     def get_queryset(self):
-        return Pet.objects.all()
+        return Pet.objects.filter(owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -265,7 +267,34 @@ class HomeView(ListView):
         context['form_medical'] = MedicalControlForm()
         context['form_healt'] = HealthConditionForm()
         return context
-    
+    def post(self, request, *args, **kwargs):
+        pet_pk_to_delete = request.POST.get('pet_to_delete')
+        if pet_pk_to_delete:
+            try:
+                pet = Pet.objects.get(pk=pet_pk_to_delete, owner=request.user)
+                pet.delete()
+            except Pet.DoesNotExist:
+                pass  # Manejar el caso si la mascota no existe
+
+        return self.get(request, *args, **kwargs)
+@method_decorator(login_required, name='dispatch')
+class PetDeleteView(ListView):
+    model = Pet
+    success_url = reverse_lazy('home')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        # Elimina registros relacionados manualmente
+        self.object.condiciones_salud.all().delete()
+        self.object.indicadores_salud.all().delete()
+        self.object.controles_medicos.all().delete()
+        self.object.seguimiento_condiciones.all().delete()
+
+        # Elimina la mascota
+        self.object.delete()
+
+        return redirect(self.get_success_url())
 def register_pet(request):
     if request.method == "POST":
         form = PetForm(request.POST,request.FILES)

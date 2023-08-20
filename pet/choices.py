@@ -4,6 +4,7 @@ indicator_types = (
     ('Heart rate', 'Heart rate'),
     ('Respiratory rate', 'Respiratory rate'),
     ('Activity level', 'Activity level'),
+    ('Vaccines', 'Vaccines'),
     ('Hydration level', 'Hydration level'),
     ('Mucous membrane color', 'Mucous membrane color'),
     ('Coat quality', 'Coat quality'),

@@ -1,8 +1,9 @@
 from django.urls import path
 from .views import register,index,HomeView,LogoutView,register_pet,change_password_view,inidicator_view,medical_view,condition_view,health_view,history_view,generate_pdf_report,generate_pdf_reports_within_range
-
+from .views import PetDeleteView
 urlpatterns = [
    path('register/',register,name="register"),
+   path('pet/<int:pk>/delete/', PetDeleteView.as_view(), name='pet_delete'),
    path('',index,name='index'),
    path('registerPet/',register_pet,name="registerPet"),
    path('home/',HomeView.as_view(),name='home'),
