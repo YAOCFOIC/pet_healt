@@ -57,9 +57,6 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary text-light">Save </button>
-                                            <button type="button" class="btn btn-success text-light" data-mdb-toggle="modal" data-mdb-target="#editPetModal">
-                                                update 
-                                            </button>
                                             <button type="button" class="btn btn-danger text-light" data-mdb-toggle="modal" data-mdb-target="#deletePetModal">
                                                 delete 
                                             </button>
@@ -70,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal para eliminar mascota -->
+                <!-- Modal to remove pet -->
                 <div class="modal fade" id="deletePetModal" tabindex="-1" aria-labelledby="deletePetModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -98,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal para editar mascota -->
+                <!-- Modal to edit pet -->
                 <div class="modal fade" id="editPetModal" tabindex="-1" aria-labelledby="editPetModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -109,13 +106,19 @@
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="modal-body">
-                                    {{ form.as_p }}
+                                    <select name="selected_pet" id="selectedPet">
+                                        {% for pet in object_list %}
+                                            <option value="{{ pet.id }}">{{ pet.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div id="selectedPetForm"></div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary">Save Change</button>
                                 </div>
                             </form>
+                           
                         </div>
                     </div>
                 </div>
@@ -130,7 +133,7 @@
                             <div class="modal-body d-flex justify-content-center">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#modal2">
-                                        <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                        <!-- Add the image using the <img> tag with the image path in "src" -->
                                         <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" />  <p>  DATA Pet</p>
                                     </button>
                                 </div>
@@ -159,11 +162,11 @@
                             <div class="btn-group">
                              
                                 <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#indicatorModal">
-                                    <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                    <!-- Add the image using the <img> tag with the image path in "src" -->
                                     <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" /> <p>  INDICATOR HEALT</p>
                                 </button>
                                 <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#medicalModal">
-                                    <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                    <!-- Add the image using the <img> tag with the image path in "src" -->
                                     <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" /> 
                                     <p>  MEDICAL CONTROL</p>
                                 </button>
@@ -174,7 +177,7 @@
                                     <p>MONITORING CONDITION</p>
                                 </a>
                                 <button type="button" class="btn btn-img" data-mdb-toggle="modal" data-mdb-target="#healthModal">
-                                    <!-- Agrega la imagen utilizando la etiqueta <img> con la ruta de la imagen en "src" -->
+                                    <!-- Add the image using the <img> tag with the image path in "src" -->
                                     <image class="rounded-circle" alt="avatar1" src="{% static "image/150pets.png" %}" /> 
                                     <p>HEALT CONDITION</p>
                                 </button>
@@ -182,6 +185,9 @@
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-success text-light" data-mdb-toggle="modal" data-mdb-target="#editPetModal">
+                                update 
+                            </button>
                             <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">
                                 Close
                             </button>

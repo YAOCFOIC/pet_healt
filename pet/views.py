@@ -41,7 +41,7 @@ def generate_pdf_report(request, pet_id):
         elements.append(Paragraph(f"<b>Name</b>: {pet.name}", styles['Normal']))
         elements.append(Paragraph(f"<b>Age</b>: {pet.age}", styles['Normal']))
         
-        # Obtener las condiciones de salud relacionadas con la mascota
+        # Obtain health conditions related to the pet
         health_conditions = HealthCondition.objects.filter(pet=pet)
         if health_conditions.exists():
             elements.append(Paragraph("Healths Conditions", styles['Heading2']))
@@ -49,9 +49,9 @@ def generate_pdf_report(request, pet_id):
             elements.append(Paragraph(f"<b>Status</b>:{condition.health_type_condition} ", styles['Normal']))
             elements.append(Paragraph(f"<b>Recomendation</b>: {condition.health_condition} ", styles['Normal']))
             elements.append(Paragraph(f"<b>Date</b>: {condition.date}", styles['Normal']))
-            # Agregar más detalles según sea necesario
+            # Add more details as needed
         
-        # Obtener los controles médicos relacionados con la mascota
+        # Obtain medical checks related to the pet
         medical_controls = MedicalControl.objects.filter(pet=pet)
         if medical_controls.exists():
             elements.append(Paragraph("Medicals Controls", styles['Heading2']))
@@ -69,7 +69,7 @@ def generate_pdf_report(request, pet_id):
             elements.append(Paragraph(condition.diagnosis, styles['Normal']))  # Text
             elements.append(Paragraph(f"<b>Date</b>: {condition.date}", styles['Normal']))
             elements.append(Spacer(1, 12))
-            # Agregar más detalles según sea necesario
+            # Add more details as needed
         
     doc.build(elements)
 
@@ -274,7 +274,7 @@ class HomeView(ListView):
                 pet = Pet.objects.get(pk=pet_pk_to_delete, owner=request.user)
                 pet.delete()
             except Pet.DoesNotExist:
-                pass  # Manejar el caso si la mascota no existe
+                pass  # Handle the case if the pet does not exist
 
         return self.get(request, *args, **kwargs)
 @method_decorator(login_required, name='dispatch')
